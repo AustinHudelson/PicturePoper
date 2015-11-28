@@ -1,5 +1,5 @@
 //
-//  GameScene.swift
+//  PicturePoperGameScene.swift
 //  Comp446Project
 //
 //  Created by Austin Hudelson on 11/28/15.
@@ -8,7 +8,7 @@
 
 import SpriteKit
 
-class GameScene: SKScene {
+class PicturePoperGameScene: SKScene {
     let piecesX = 10
     let piecesY = 10
     var myLabel: SKLabelNode!
@@ -20,8 +20,6 @@ class GameScene: SKScene {
         myLabel.fontSize = 45;
         myLabel.position = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame));
         self.addChild(myLabel)
-        
-        
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
