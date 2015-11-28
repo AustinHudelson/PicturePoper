@@ -9,14 +9,19 @@
 import SpriteKit
 
 class GameScene: SKScene {
+    let piecesX = 10
+    let piecesY = 10
+    var myLabel: SKLabelNode!
+    
     override func didMoveToView(view: SKView) {
         /* Setup your scene here */
-        let myLabel = SKLabelNode(fontNamed:"Chalkduster")
-        myLabel.text = "Hello, World!";
+        myLabel = SKLabelNode(fontNamed:"Chalkduster")
+        myLabel.text = "\(CGRectGetMaxY(self.frame))  \(CGRectGetMaxX(self.frame))"
         myLabel.fontSize = 45;
         myLabel.position = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame));
-        
         self.addChild(myLabel)
+        
+        
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
@@ -41,5 +46,6 @@ class GameScene: SKScene {
    
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
+        myLabel.text = "\(CGRectGetMaxY(self.frame))  \(CGRectGetMaxX(self.frame)) \(currentTime)"
     }
 }
