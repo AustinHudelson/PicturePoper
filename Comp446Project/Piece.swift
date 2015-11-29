@@ -12,13 +12,15 @@ class Piece: SKSpriteNode {
     
     var destroyed: Bool = false
     
+    private var GScene: PicturePoperGameScene
     private var currentGridX: Int
     private var currentGridY: Int
     private let maxGridX: Int
     private let maxGridY: Int
     private var ID: String
     
-    init(texture: SKTexture?, color: UIColor, gameScene: PicturePoperGameScene, gridX: Int, gridY: Int) {
+    init(texture: SKTexture?, gameScene: PicturePoperGameScene, gridX: Int, gridY: Int) {
+        GScene = gameScene
         currentGridX = gridX
         currentGridY = gridY
         maxGridX = gameScene.piecesX
@@ -30,8 +32,13 @@ class Piece: SKSpriteNode {
         } else {
             ID = ""
         }
-        let dimention = min(gameScene.size.width/CGFloat(maxGridX), gameScene.size.height/CGFloat(maxGridY))
-        super.init(texture: texture, color: color, size: CGSize(width: dimention, height: dimention))
+        print(ID)
+        let dimention = min((CGRectGetMaxX(gameScene.frame)-(gameScene.borderX))/CGFloat(maxGridX), (CGRectGetMaxY(gameScene.frame)-(gameScene.borderY))/CGFloat(maxGridY))
+        //Give the sprite a random color for now.
+        let randomColor: UIColor = ([UIColor.blackColor(), UIColor.blueColor(), UIColor.whiteColor()])[Int.random(0...2)]
+        super.init(texture: texture, color: randomColor, size: CGSize(width: dimention, height: dimention))
+        
+        moveToGridPositionInstantly(currentGridX, gridPositionY: currentGridY)
     }
     
     func swipeUp() {
@@ -55,8 +62,12 @@ class Piece: SKSpriteNode {
         destroyed = true
     }
     
-    private func moveTo(gridPositionX: Int, gridPositionY: Int){
-        
+    private func moveToGridPositionInstantly(gridPositionX: Int, gridPositionY: Int){
+        currentGridX = gridPositionX
+        currentGridY = gridPositionY
+        let newX = (CGFloat(currentGridX) * self.size.width)+(self.size.width/2.0)+GScene.leftMargin
+        let newY = ((CGFloat(currentGridY) * self.size.height)+(self.size.height/2.0)+GScene.topMargin)
+        self.position = CGPoint(x:newX, y:newY)
     }
     
     
