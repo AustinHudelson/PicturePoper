@@ -33,7 +33,7 @@ class Piece: SKSpriteNode {
             ID = ""
         }
         print(ID)
-        let dimention = min((CGRectGetMaxX(gameScene.frame)-(gameScene.borderX))/CGFloat(maxGridX), (CGRectGetMaxY(gameScene.frame)-(gameScene.borderY))/CGFloat(maxGridY))
+        let dimention = max(min((CGRectGetMaxX(gameScene.frame)-(gameScene.borderX))/CGFloat(maxGridX), (CGRectGetMaxY(gameScene.frame)-(gameScene.borderY))/CGFloat(maxGridY)), 5)
         //Give the sprite a random color for now.
         let randomColor: UIColor = ([UIColor.blackColor(), UIColor.blueColor(), UIColor.whiteColor()])[Int.random(0...2)]
         super.init(texture: texture, color: randomColor, size: CGSize(width: dimention, height: dimention))
@@ -62,11 +62,18 @@ class Piece: SKSpriteNode {
         destroyed = true
     }
     
+    //Immediately resizes and places the piece at its current XY grid position in the scene
+    func reposition() {
+        let dimention = min((CGRectGetMaxX(GScene.frame)-(GScene.borderX))/CGFloat(maxGridX), (CGRectGetMaxY(GScene.frame)-(GScene.borderY))/CGFloat(maxGridY))
+        self.size = CGSize(width: dimention, height: dimention)
+        moveToGridPositionInstantly(currentGridX, gridPositionY: currentGridY)
+    }
+    
     private func moveToGridPositionInstantly(gridPositionX: Int, gridPositionY: Int){
         currentGridX = gridPositionX
         currentGridY = gridPositionY
         let newX = (CGFloat(currentGridX) * self.size.width)+(self.size.width/2.0)+GScene.leftMargin
-        let newY = ((CGFloat(currentGridY) * self.size.height)+(self.size.height/2.0)+GScene.topMargin)
+        let newY = CGRectGetMaxY(GScene.frame)-((CGFloat(currentGridY) * self.size.height)+(self.size.height/2.0)+GScene.topMargin)
         self.position = CGPoint(x:newX, y:newY)
     }
     
