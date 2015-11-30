@@ -108,6 +108,17 @@
 			name = Pieces;
 			sourceTree = "<group>";
 		};
+		F44227A91C0BF9E8006D8D01 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				F4F67B511C0A2FEE007C7B9A /* AppDelegate.swift */,
+				F4F67B5C1C0A2FEE007C7B9A /* Assets.xcassets */,
+				F4F67B5E1C0A2FEE007C7B9A /* LaunchScreen.storyboard */,
+				F4F67B611C0A2FEE007C7B9A /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		F4F67B451C0A2FEE007C7B9A = {
 			isa = PBXGroup;
 			children = (
@@ -131,15 +142,12 @@
 		F4F67B501C0A2FEE007C7B9A /* Comp446Project */ = {
 			isa = PBXGroup;
 			children = (
-				F4F67B511C0A2FEE007C7B9A /* AppDelegate.swift */,
 				F4F67B551C0A2FEE007C7B9A /* PicturePoperGameScene.swift */,
-				F44227A61C0BDEB3006D8D01 /* Pieces */,
 				F4F67B571C0A2FEE007C7B9A /* GameViewController.swift */,
-				F44227A11C0BCDE6006D8D01 /* Extensions */,
 				F4F67B591C0A2FEE007C7B9A /* Main.storyboard */,
-				F4F67B5C1C0A2FEE007C7B9A /* Assets.xcassets */,
-				F4F67B5E1C0A2FEE007C7B9A /* LaunchScreen.storyboard */,
-				F4F67B611C0A2FEE007C7B9A /* Info.plist */,
+				F44227A61C0BDEB3006D8D01 /* Pieces */,
+				F44227A11C0BCDE6006D8D01 /* Extensions */,
+				F44227A91C0BF9E8006D8D01 /* Supporting Files */,
 			);
 			path = Comp446Project;
 			sourceTree = "<group>";

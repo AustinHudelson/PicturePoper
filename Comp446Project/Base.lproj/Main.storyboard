@@ -22,6 +22,9 @@
                                 <rect key="frame" x="546" y="527" width="34" height="53"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="34"/>
                                 <state key="normal" title="📷"/>
+                                <connections>
+                                    <action selector="chooseImage:" destination="BV1-FR-VrT" eventType="touchUpInside" id="aiC-32-tns"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>

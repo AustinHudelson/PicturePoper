@@ -9,10 +9,13 @@
 import UIKit
 import SpriteKit
 
-class GameViewController: UIViewController {
+class GameViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        imagePicker.delegate = self
+        
         let scene = PicturePoperGameScene(size: self.view.frame.size)
         if 1==1 {
             // Configure the view.
@@ -23,6 +26,8 @@ class GameViewController: UIViewController {
             
             /* Set the scale mode to scale to fit the window */
             scene.scaleMode = SKSceneScaleMode.ResizeFill
+            
+            scene.backgroundColor = UIColor.blackColor()
             
             skView.presentScene(scene)
         }
@@ -47,5 +52,25 @@ class GameViewController: UIViewController {
 
     override func prefersStatusBarHidden() -> Bool {
         return true
+    }
+    
+    //MARK : imagePicking
+    
+    let imagePicker = UIImagePickerController()
+    
+    @IBAction func chooseImage(sender: UIButton) {
+        imagePicker.allowsEditing = true //Allow an edited photo
+        imagePicker.sourceType = .PhotoLibrary //location of images
+        presentViewController(imagePicker, animated: true, completion: nil)//Present the picker
+    }
+    
+    func imagePickerController(
+        picker: UIImagePickerController,
+        didFinishPickingMediaWithInfo info: [String : AnyObject])
+    {
+        
+    }
+    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+        
     }
 }
