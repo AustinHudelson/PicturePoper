@@ -6,13 +6,13 @@
 //  Copyright © 2015 Austin Hudelson. All rights reserved.
 //
 
-import UIKit
+import SpriteKit
 extension UITouch
 {
     //Determines the direction of a UI Touch from a specific origin. "Up" "Down" "Left" "Right"
     //String temporarially used as an enum
-    func touchDirectionFromPoint(origin: CGPoint, inView: UIView) -> String {
-        let currentPoint = self.locationInView(inView)
+    func directionFromPoint(origin: CGPoint, inNode: SKNode) -> String {
+        let currentPoint = self.locationInNode(inNode)
         //Determine if the swipe is more vert or horisontal
         let xDiff = currentPoint.x - origin.x
         let yDiff = currentPoint.y - origin.y

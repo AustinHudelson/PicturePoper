@@ -41,20 +41,32 @@ class Piece: SKSpriteNode {
         moveToGridPositionInstantly(currentGridX, gridPositionY: currentGridY)
     }
     
-    func swipeUp() {
-        
+    func swipeUp() -> SKAction? {
+        if (currentGridY < maxGridY-1) {
+            moveToGridPositionOverTime(currentGridX, gridPositionY: currentGridY+1)
+        }
+        return nil
     }
     
-    func swipeDown() {
-        
+    func swipeDown() -> SKAction? {
+        if (currentGridY > 0) {
+            moveToGridPositionOverTime(currentGridX, gridPositionY: currentGridY-1)
+        }
+        return nil
     }
     
-    func swipeLeft() {
-        
+    func swipeLeft() -> SKAction? {
+        if (currentGridX > 0) {
+            moveToGridPositionOverTime(currentGridX-1, gridPositionY: currentGridY)
+        }
+        return nil
     }
     
-    func swipeRight() {
-        
+    func swipeRight() -> SKAction? {
+        if (currentGridX < maxGridX-1) {
+            moveToGridPositionOverTime(currentGridX+1, gridPositionY: currentGridY)
+        }
+        return nil
     }
     
     func destroy() {
@@ -77,9 +89,15 @@ class Piece: SKSpriteNode {
         self.position = CGPoint(x:newX, y:newY)
     }
     
-    
-    
-    
+    //Returns the SKAction of the move animation
+    private func moveToGridPositionOverTime(gridPositionX: Int, gridPositionY: Int) -> SKAction? {
+        currentGridX = gridPositionX
+        currentGridY = gridPositionY
+        let newX = (CGFloat(currentGridX) * self.size.width)+(self.size.width/2.0)+GScene.leftMargin
+        let newY = CGRectGetMaxY(GScene.frame)-((CGFloat(currentGridY) * self.size.height)+(self.size.height/2.0)+GScene.topMargin)
+        self.position = CGPoint(x:newX, y:newY)
+        return nil
+    }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
