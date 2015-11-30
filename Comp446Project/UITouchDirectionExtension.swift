@@ -16,7 +16,7 @@ extension UITouch
         //Determine if the swipe is more vert or horisontal
         let xDiff = currentPoint.x - origin.x
         let yDiff = currentPoint.y - origin.y
-        if xDiff > yDiff {
+        if abs(xDiff) > abs(yDiff) {
             //Horisontal
             if xDiff > 0 {
                 //right swipe

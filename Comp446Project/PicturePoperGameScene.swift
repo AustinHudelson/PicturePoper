@@ -11,8 +11,8 @@ import SpriteKit
 class PicturePoperGameScene: SKScene {
     
     
-    let piecesX = 6
-    let piecesY = 6
+    let piecesX = PieceGridPosition.maxX+1
+    let piecesY = PieceGridPosition.maxY+1
     let bottomMargin: CGFloat = 8.0
     let topMargin: CGFloat = 64.0
     let leftMargin: CGFloat = 8.0
@@ -22,23 +22,14 @@ class PicturePoperGameScene: SKScene {
     
     
     var myLabel: SKLabelNode!
-    var pieces: [Piece] = []
+    var pieceGrid: PieceGrid!
     var animating: Bool = false //Toggles if animation is in progress. if yes then touch input to the pieces is blocked.
     var selectedPiece: Piece? = nil
     
+    
     override func didMoveToView(view: SKView) {
-        
         /* Setup your scene here */
-        
-        //Add the initial Pieces
-        for i in 0...piecesX-1 {
-            for j in 0...piecesY-1 {
-                let newPiece = Piece(texture: SKTexture(imageNamed: "Spaceship"), gameScene: self, gridX: i, gridY: j)
-                pieces.append(newPiece)
-                self.addChild(newPiece)
-            }
-        }
-        
+        pieceGrid = PieceGrid(scene: self)
         myLabel = SKLabelNode(fontNamed:"Chalkduster")
         myLabel.text = "\(CGRectGetMaxY(self.frame))  \(CGRectGetMaxX(self.frame))"
         myLabel.fontSize = 16;
@@ -59,18 +50,30 @@ class PicturePoperGameScene: SKScene {
     
     override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
         /* Called when a touch moves */
-        let minimumMovedDistance: CGFloat = 5.0
-        if (selectedPiece != nil) {
+        let minimumMovedDistance: CGFloat = 50.0
+        if (selectedPiece != nil && animating == false) {
             for touch in touches {
                 if minimumMovedDistance < CGPoint.getDistance(selectedPiece!.position, p2:touch.locationInNode(self)) {
-                    switch (touch.directionFromPoint(selectedPiece!.position, inNode: self)){
-                        case "Up": selectedPiece!.swipeUp()
-                        case "Down": selectedPiece!.swipeDown()
-                        case "Left": selectedPiece!.swipeLeft()
-                        case "Right": selectedPiece!.swipeRight()
+                    print("A\(selectedPiece!.position), \(touch.locationInView(self.view))")
+                    var swapAction: SKAction?
+                    switch (touch.directionFromPoint(selectedPiece!.position, inNode: selectedPiece!.parent!)){
+                        case "Up": swapAction = selectedPiece!.swipeUp()
+                        case "Down": swapAction = selectedPiece!.swipeDown()
+                        case "Left": swapAction = selectedPiece!.swipeLeft()
+                        case "Right": swapAction = selectedPiece!.swipeRight()
                         default: continue
                     }
                     selectedPiece = nil
+                    if swapAction != nil {
+                        let startAnimating = SKAction.runBlock({
+                            self.animating = true
+                        })
+                        let stopAnimating = SKAction.runBlock({
+                            self.animating = false
+                        })
+                        let handleSwipeAction = SKAction.sequence([startAnimating, swapAction!, stopAnimating])
+                        runAction(handleSwipeAction)
+                    }
                 }
             }
         }
@@ -91,8 +94,12 @@ class PicturePoperGameScene: SKScene {
     
     override func didChangeSize(oldSize: CGSize) {
         myLabel?.text = "\(self.size.height) \(self.size.width)"
-        for p in pieces {
-            p.reposition()
+        if pieceGrid != nil {   //Scene has to have been presented
+            for p in pieceGrid.pieces {
+                for q in p {
+                    q.reposition()
+                }
+            }
         }
     }
 }

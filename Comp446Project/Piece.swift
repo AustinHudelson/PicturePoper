@@ -11,18 +11,20 @@ import SpriteKit
 class Piece: SKSpriteNode {
     
     var destroyed: Bool = false
+    var gridPosition: PieceGridPosition
     
     private var GScene: PicturePoperGameScene
-    private var currentGridX: Int
-    private var currentGridY: Int
     private let maxGridX: Int
     private let maxGridY: Int
     private var ID: String
+    private var pieceGrid: PieceGrid
     
-    init(texture: SKTexture?, gameScene: PicturePoperGameScene, gridX: Int, gridY: Int) {
+    static let swapActionDuration = NSTimeInterval(0.5)
+    
+    init(texture: SKTexture?, gameScene: PicturePoperGameScene, initialGridPosition: PieceGridPosition, grid: PieceGrid) {
         GScene = gameScene
-        currentGridX = gridX
-        currentGridY = gridY
+        pieceGrid = grid
+        gridPosition = initialGridPosition
         maxGridX = gameScene.piecesX
         maxGridY = gameScene.piecesY
         //Hopefully unique ID for each description of the texture.
@@ -38,35 +40,75 @@ class Piece: SKSpriteNode {
         let randomColor: UIColor = ([UIColor.blackColor(), UIColor.blueColor(), UIColor.whiteColor()])[Int.random(0...2)]
         super.init(texture: texture, color: randomColor, size: CGSize(width: dimention, height: dimention))
         
-        moveToGridPositionInstantly(currentGridX, gridPositionY: currentGridY)
+        moveToGridPositionInstantly(gridPosition)
     }
     
-    func swipeUp() -> SKAction? {
-        if (currentGridY < maxGridY-1) {
-            moveToGridPositionOverTime(currentGridX, gridPositionY: currentGridY+1)
+    //Returns an action that will cause the sequence to run
+    
+    private func getAbovePiece() -> Piece? {
+        if let newGridPosition = gridPosition.getAbovePosition() {
+            return pieceGrid.getPiece(newGridPosition)
         }
         return nil
+    }
+    private func getBelowPiece() -> Piece? {
+        if let newGridPosition = gridPosition.getBelowPosition() {
+            return pieceGrid.getPiece(newGridPosition)
+        }
+        return nil
+    }
+    private func getLeftPiece() -> Piece? {
+        if let newGridPosition = gridPosition.getLeftPosition() {
+            return pieceGrid.getPiece(newGridPosition)
+        }
+        return nil
+    }
+    private func getRightPiece() -> Piece? {
+        if let newGridPosition = gridPosition.getRightPosition() {
+            return pieceGrid.getPiece(newGridPosition)
+        }
+        return nil
+    }
+    
+    //All return actions to handle the swipe. Does not handle it.
+    func swipeUp() -> SKAction? {
+        print("up")
+        if let otherPiece = getAbovePiece() {
+            return pieceGrid.swapPieces(self, p2:otherPiece)
+        } else {
+            //Error move
+            return nil
+        }
     }
     
     func swipeDown() -> SKAction? {
-        if (currentGridY > 0) {
-            moveToGridPositionOverTime(currentGridX, gridPositionY: currentGridY-1)
+        print("down")
+        if let otherPiece = getBelowPiece() {
+            return pieceGrid.swapPieces(self, p2:otherPiece)
+        } else {
+            //Error move
+            return nil
         }
-        return nil
     }
     
     func swipeLeft() -> SKAction? {
-        if (currentGridX > 0) {
-            moveToGridPositionOverTime(currentGridX-1, gridPositionY: currentGridY)
+        print("Left")
+        if let otherPiece = getLeftPiece() {
+            return pieceGrid.swapPieces(self, p2:otherPiece)
+        } else {
+            //Error move
+            return nil
         }
-        return nil
     }
     
     func swipeRight() -> SKAction? {
-        if (currentGridX < maxGridX-1) {
-            moveToGridPositionOverTime(currentGridX+1, gridPositionY: currentGridY)
+        print("Right")
+        if let otherPiece = getRightPiece() {
+            return pieceGrid.swapPieces(self, p2:otherPiece)
+        } else {
+            //Error move
+            return nil
         }
-        return nil
     }
     
     func destroy() {
@@ -78,25 +120,30 @@ class Piece: SKSpriteNode {
     func reposition() {
         let dimention = min((CGRectGetMaxX(GScene.frame)-(GScene.borderX))/CGFloat(maxGridX), (CGRectGetMaxY(GScene.frame)-(GScene.borderY))/CGFloat(maxGridY))
         self.size = CGSize(width: dimention, height: dimention)
-        moveToGridPositionInstantly(currentGridX, gridPositionY: currentGridY)
+        moveToGridPositionInstantly(gridPosition)
     }
     
-    private func moveToGridPositionInstantly(gridPositionX: Int, gridPositionY: Int){
-        currentGridX = gridPositionX
-        currentGridY = gridPositionY
-        let newX = (CGFloat(currentGridX) * self.size.width)+(self.size.width/2.0)+GScene.leftMargin
-        let newY = CGRectGetMaxY(GScene.frame)-((CGFloat(currentGridY) * self.size.height)+(self.size.height/2.0)+GScene.topMargin)
+    private func moveToGridPositionInstantly(newPosition: PieceGridPosition){
+        gridPosition.x = newPosition.x
+        gridPosition.y = newPosition.y
+        let newX = (CGFloat(gridPosition.x) * self.size.width)+(self.size.width/2.0)+GScene.leftMargin
+        let newY = CGRectGetMaxY(GScene.frame)-((CGFloat(gridPosition.y) * self.size.height)+(self.size.height/2.0)+GScene.topMargin)
         self.position = CGPoint(x:newX, y:newY)
     }
     
-    //Returns the SKAction of the move animation
-    private func moveToGridPositionOverTime(gridPositionX: Int, gridPositionY: Int) -> SKAction? {
-        currentGridX = gridPositionX
-        currentGridY = gridPositionY
-        let newX = (CGFloat(currentGridX) * self.size.width)+(self.size.width/2.0)+GScene.leftMargin
-        let newY = CGRectGetMaxY(GScene.frame)-((CGFloat(currentGridY) * self.size.height)+(self.size.height/2.0)+GScene.topMargin)
-        self.position = CGPoint(x:newX, y:newY)
-        return nil
+    //Returns the SKAction of the move animation. Does not execute it'
+    //Running the action alone on the Piece will not update its position in the PieceGrid either
+    func moveToGridPositionOverTime(newPosition: PieceGridPosition) -> SKAction {
+        let changeGridPositionAction = SKAction.runBlock({
+            print("Moving to: \(newPosition.x), \(newPosition.y)")
+            self.gridPosition.x = newPosition.x
+            self.gridPosition.y = newPosition.y
+        })
+        let newX = (CGFloat(newPosition.x) * self.size.width)+(self.size.width/2.0)+GScene.leftMargin
+        let newY = CGRectGetMaxY(GScene.frame)-((CGFloat(newPosition.y) * self.size.height)+(self.size.height/2.0)+GScene.topMargin)
+        let moveOverTimeAction: SKAction = SKAction.moveTo(CGPoint(x:newX, y:newY), duration: Piece.swapActionDuration)
+        let moveToGridPositionOverTimeAction = SKAction.sequence([changeGridPositionAction, moveOverTimeAction])
+        return moveToGridPositionOverTimeAction
     }
     
     required init?(coder aDecoder: NSCoder) {
