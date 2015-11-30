@@ -19,6 +19,8 @@ class PicturePoperGameScene: SKScene {
     let borderY: CGFloat = 72.0 //Top+Bottom Margin
     var myLabel: SKLabelNode!
     var pieces: [Piece] = []
+    var animating: Bool = false //Toggles if animation is in progress. if yes then touch input to the pieces is blocked.
+    var selectedPiece: Piece? = nil
     
     override func didMoveToView(view: SKView) {
         
@@ -42,23 +44,27 @@ class PicturePoperGameScene: SKScene {
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
        /* Called when a touch begins */
-        
         for touch in touches {
-            let location = touch.locationInNode(self)
+            if selectedPiece == nil { //No piece is already being selected
+                if let touchedPiece = self.nodeAtPoint(touch.locationInNode(self)) as? Piece { //Touched node is a piece
+                    selectedPiece = touchedPiece
+                }
+            }
+        }
+    }
+    
+    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        /* Called when a touch moves */
+        let minimumMovedDistance = 5.0
+        for touch in touches {
             
-            let sprite = SKSpriteNode(imageNamed:"Spaceship")
-            
-            sprite.xScale = 0.1
-            sprite.yScale = 0.1
-            sprite.position = location
-            
-            let action = SKAction.rotateByAngle(CGFloat(M_PI), duration:1)
-            
-            sprite.runAction(SKAction.repeatActionForever(action))
-            
-            self.addChild(sprite)
-            
-            myLabel.text = "\(touch.locationInNode(self))"
+        }
+    }
+    
+    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        /* Called when a touch ends */
+        for touch in touches {
+            selectedPiece = nil
         }
     }
    
