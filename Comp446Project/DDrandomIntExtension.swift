@@ -5,6 +5,7 @@
 //  Taken from answer on stack overflow.
 //  http://stackoverflow.com/questions/24132399/how-does-one-make-random-number-between-range-for-arc4random-uniform
 //
+
 import Foundation
 extension Int
 {

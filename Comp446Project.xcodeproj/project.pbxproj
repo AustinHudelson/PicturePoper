@@ -20,7 +20,7 @@
 		F4F67B6B1C0A2FEE007C7B9A /* Comp446ProjectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4F67B6A1C0A2FEE007C7B9A /* Comp446ProjectTests.swift */; };
 		F4F67B761C0A2FEE007C7B9A /* Comp446ProjectUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4F67B751C0A2FEE007C7B9A /* Comp446ProjectUITests.swift */; };
 		F4F67B841C0A35D5007C7B9A /* Piece.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4F67B831C0A35D5007C7B9A /* Piece.swift */; settings = {ASSET_TAGS = (); }; };
-		F4F67B861C0A43FA007C7B9A /* randomIntExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4F67B851C0A43FA007C7B9A /* randomIntExtension.swift */; settings = {ASSET_TAGS = (); }; };
+		F4F67B861C0A43FA007C7B9A /* DDrandomIntExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4F67B851C0A43FA007C7B9A /* DDrandomIntExtension.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,7 +60,7 @@
 		F4F67B751C0A2FEE007C7B9A /* Comp446ProjectUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comp446ProjectUITests.swift; sourceTree = "<group>"; };
 		F4F67B771C0A2FEE007C7B9A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F4F67B831C0A35D5007C7B9A /* Piece.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Piece.swift; sourceTree = "<group>"; };
-		F4F67B851C0A43FA007C7B9A /* randomIntExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = randomIntExtension.swift; sourceTree = "<group>"; };
+		F4F67B851C0A43FA007C7B9A /* DDrandomIntExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DDrandomIntExtension.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,7 +93,7 @@
 			children = (
 				F442279F1C0BCA26006D8D01 /* UITouchDirectionExtension.swift */,
 				F44227A21C0BCE10006D8D01 /* CGPointDistanceExtension.swift */,
-				F4F67B851C0A43FA007C7B9A /* randomIntExtension.swift */,
+				F4F67B851C0A43FA007C7B9A /* DDrandomIntExtension.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -302,7 +302,7 @@
 			files = (
 				F44227A81C0BE026006D8D01 /* PieceGrid.swift in Sources */,
 				F4F67B841C0A35D5007C7B9A /* Piece.swift in Sources */,
-				F4F67B861C0A43FA007C7B9A /* randomIntExtension.swift in Sources */,
+				F4F67B861C0A43FA007C7B9A /* DDrandomIntExtension.swift in Sources */,
 				F4F67B561C0A2FEE007C7B9A /* PicturePoperGameScene.swift in Sources */,
 				F44227A51C0BDBD3006D8D01 /* PieceGridPosition.swift in Sources */,
 				F4F67B581C0A2FEE007C7B9A /* GameViewController.swift in Sources */,
