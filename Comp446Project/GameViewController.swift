@@ -10,6 +10,8 @@ import UIKit
 import SpriteKit
 
 class GameViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    var gameScene: PicturePoperGameScene?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -17,6 +19,8 @@ class GameViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         imagePicker.delegate = self
         
         let scene = PicturePoperGameScene(size: self.view.frame.size)
+        self.gameScene = scene
+        
         if 1==1 {
             // Configure the view.
             let skView = self.view as! SKView
@@ -68,9 +72,13 @@ class GameViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         picker: UIImagePickerController,
         didFinishPickingMediaWithInfo info: [String : AnyObject])
     {
-        
+        let chosenImage = info[UIImagePickerControllerOriginalImage] as! UIImage //2
+        gameScene?.setPieceImage(0, image: chosenImage)
+        //myImageView.contentMode = .ScaleAspectFit
+        //myImageView.image = chosenImage
+        dismissViewControllerAnimated(true, completion: nil) //5
     }
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-        
+        dismissViewControllerAnimated(true, completion: nil) //5
     }
 }

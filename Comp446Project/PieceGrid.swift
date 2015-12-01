@@ -15,7 +15,11 @@ class PieceGrid {
         for i in 0...PieceGridPosition.maxX {
             pieces.append([])
             for j in 0...PieceGridPosition.maxY {
-                let newPiece = Piece(texture: SKTexture(imageNamed: "Spaceship"), gameScene: scene, initialGridPosition:PieceGridPosition(x:i, y:j)!, grid: self)
+                //Use spaceship as placeholder initial texture
+                //Create a grid position for the piece
+                //Set the piece ID to be an integer index converted to a string
+                //unique piece IDs there should be
+                let newPiece = Piece(initialTexture: SKTexture(imageNamed: "Spaceship"), gameScene: scene, initialGridPosition:PieceGridPosition(x:i, y:j)!, grid: self, id: String(Int.random(0...Piece.typesOfPieces-1)))
                 pieces[i].append(newPiece)
                 scene.addChild(newPiece)
             }
@@ -39,12 +43,26 @@ class PieceGrid {
         })
         //Is it best to "fake" an action that takes a certain amount of time by pairing a block with a wait?
         //Is there a better method using RunActionWithCompletionBlock
+        //Use the duration property of the returned method?
         let waitForSwapAnimationAction = SKAction.waitForDuration(Piece.swapActionDuration)
         let handleSwapAction = SKAction.group([executeSwapBlockAction, waitForSwapAnimationAction])
+        
+        //After swap check for matches?
+        
         return handleSwapAction
     }
     
     func removePiece(p: Piece) {
         //Removes a piece from the grid and fills in the hole left by that grid piece.
+    }
+    
+    func setPieceImage(ID: String, image: UIImage){
+        for p in pieces {
+            for q in p {
+                if q.ID == ID {
+                    q.texture = SKTexture(image: image)
+                }
+            }
+        }
     }
 }

@@ -26,6 +26,13 @@ class PicturePoperGameScene: SKScene {
     var animating: Bool = false //Toggles if animation is in progress. if yes then touch input to the pieces is blocked.
     var selectedPiece: Piece? = nil
     
+    //MARK: Interactions for Controller
+    
+    func setPieceImage(pieceIDIndex: Int, image: UIImage){
+        pieceGrid.setPieceImage(String(pieceIDIndex), image: image)
+    }
+    
+    //MARK: Overrides for scene
     
     override func didMoveToView(view: SKView) {
         /* Setup your scene here */

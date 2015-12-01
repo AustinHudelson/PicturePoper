@@ -22,8 +22,9 @@ class Piece: SKSpriteNode {
     static let swapActionDuration = NSTimeInterval(0.5)
     static let destroyActionDuration = NSTimeInterval(0.5)
     static let matchRequirement = 3
+    static let typesOfPieces = 5
     
-    init(texture: SKTexture?, gameScene: PicturePoperGameScene, initialGridPosition: PieceGridPosition, grid: PieceGrid) {
+    init(initialTexture: SKTexture?, gameScene: PicturePoperGameScene, initialGridPosition: PieceGridPosition, grid: PieceGrid, id: String) {
         GScene = gameScene
         pieceGrid = grid
         gridPosition = initialGridPosition
@@ -31,16 +32,12 @@ class Piece: SKSpriteNode {
         maxGridY = gameScene.piecesY
         //Hopefully unique ID for each description of the texture.
         //ID will be used to check for matches
-        if texture != nil {
-            ID = texture!.description
-        } else {
-            ID = ""
-        }
+        ID = id
         print(ID)
         let dimention = max(min((CGRectGetMaxX(gameScene.frame)-(gameScene.borderX))/CGFloat(maxGridX), (CGRectGetMaxY(gameScene.frame)-(gameScene.borderY))/CGFloat(maxGridY)), 5)
         //Give the sprite a random color for now.
         let randomColor: UIColor = ([UIColor.blackColor(), UIColor.blueColor(), UIColor.whiteColor()])[Int.random(0...2)]
-        super.init(texture: texture, color: randomColor, size: CGSize(width: dimention, height: dimention))
+        super.init(texture: initialTexture, color: randomColor, size: CGSize(width: dimention, height: dimention))
         
         moveToGridPositionInstantly(gridPosition)
     }
