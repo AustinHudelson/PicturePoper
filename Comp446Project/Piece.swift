@@ -12,14 +12,16 @@ class Piece: SKSpriteNode {
     
     var destroyed: Bool = false
     var gridPosition: PieceGridPosition
+    var ID: String
     
     private var GScene: PicturePoperGameScene
     private let maxGridX: Int
     private let maxGridY: Int
-    private var ID: String
     private var pieceGrid: PieceGrid
     
     static let swapActionDuration = NSTimeInterval(0.5)
+    static let destroyActionDuration = NSTimeInterval(0.5)
+    static let matchRequirement = 3
     
     init(texture: SKTexture?, gameScene: PicturePoperGameScene, initialGridPosition: PieceGridPosition, grid: PieceGrid) {
         GScene = gameScene
@@ -146,7 +148,136 @@ class Piece: SKSpriteNode {
         return moveToGridPositionOverTimeAction
     }
     
+    //Returns the SKAction that will destroy this piece when ran on the piece.
+    //Does not execute it.
+    func destroyPiece(newPosition: PieceGridPosition) -> SKAction {
+        let beginDestroy = SKAction.runBlock({
+            self.destroyed = true
+        })
+        let destroyAnimation: SKAction = SKAction.waitForDuration(Piece.destroyActionDuration)
+        let finalizeDestroy = SKAction.runBlock({
+            self.removeFromParent()
+            
+        })
+        let destroy = SKAction.sequence([beginDestroy, destroyAnimation, finalizeDestroy])
+        return destroy
+    }
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func isAMatch(otherPiece: Piece) -> Bool {
+        if self.ID == otherPiece.ID {
+            return true
+        }
+        return false
+    }
+    
+    func checkForVerticalMatches() -> Set<Piece> {
+        let topMatch = self.getTopMatch()
+        let bottomMatch = self.getBottomMatch()
+        let vertMatch = Piece.getPiecesBetween(topMatch, p2: bottomMatch)
+        //Must have atleast "3"? in a column with same ID to be considered a match
+        if vertMatch.count >= Piece.matchRequirement {
+            return vertMatch
+        }
+        return []
+    }
+    
+    func checkForHorisontalMatches() -> Set<Piece> {
+        let topMatch = self.getLeftMatch()
+        let bottomMatch = self.getRightMatch()
+        let vertMatch = Piece.getPiecesBetween(topMatch, p2: bottomMatch)
+        //Must have atleast "3"? in a column with same ID to be considered a match
+        if vertMatch.count >= Piece.matchRequirement {
+            return vertMatch
+        }
+        return []
+    }
+    
+    static func getMatchSet(disturbedPieces pieces: Set<Piece>) -> Set<Piece> {
+        var returnSet: Set<Piece> = []
+        for p in pieces {
+            returnSet = returnSet.union(p.checkForVerticalMatches())
+            returnSet = returnSet.union(p.checkForHorisontalMatches())
+        }
+        return returnSet
+    }
+    
+    private static func getPiecesBetween(p1: Piece, p2: Piece) -> Set<Piece> {
+        //Returns an empty set if the pieces are not in the same row or column.
+        var returnset: Set<Piece> = []
+        let xloc1 = p1.gridPosition.x
+        let xloc2 = p2.gridPosition.x
+        let yloc1 = p1.gridPosition.y
+        let yloc2 = p2.gridPosition.y
+        if (xloc1 == xloc2) {
+            for y in min(yloc1, yloc2) ... max(yloc1, yloc2) {
+                returnset.insert(p1.pieceGrid.getPiece(PieceGridPosition(x: xloc1, y: y)!))
+            }
+        }
+        if (yloc1 == yloc2) {
+            for x in min(xloc1, xloc2) ... max(xloc1, xloc2) {
+                returnset.insert(p1.pieceGrid.getPiece(PieceGridPosition(x: x, y: yloc1)!))
+            }
+        }
+        return returnset
+    }
+    
+    private func getTopMatch() -> Piece {
+        var nextPiece: Piece = self
+        repeat {
+            if let temp = nextPiece.getAbovePiece() {
+                if (temp.ID == self.ID) {
+                    nextPiece = temp
+                    continue
+                }
+            }
+            break
+        } while (true)
+        return nextPiece
+    }
+    
+    private func getBottomMatch() -> Piece {
+        var nextPiece: Piece = self
+        repeat {
+            if let temp = nextPiece.getBelowPiece() {
+                if (temp.ID == self.ID) {
+                    nextPiece = temp
+                    continue
+                }
+            }
+            break
+        } while (true)
+        return nextPiece
+    }
+    
+    private func getLeftMatch() -> Piece {
+        var nextPiece: Piece = self
+        repeat {
+            if let temp = nextPiece.getLeftPiece() {
+                if (temp.ID == self.ID) {
+                    nextPiece = temp
+                    continue
+                }
+            }
+            break
+        } while (true)
+        return nextPiece
+    }
+    
+    private func getRightMatch() -> Piece {
+        var nextPiece: Piece = self
+        repeat {
+            if let temp = nextPiece.getRightPiece() {
+                if (temp.ID == self.ID) {
+                    nextPiece = temp
+                    continue
+                }
+            }
+            break
+        } while (true)
+        return nextPiece
     }
 }

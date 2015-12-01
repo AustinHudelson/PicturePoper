@@ -43,4 +43,8 @@ class PieceGrid {
         let handleSwapAction = SKAction.group([executeSwapBlockAction, waitForSwapAnimationAction])
         return handleSwapAction
     }
+    
+    func removePiece(p: Piece) {
+        //Removes a piece from the grid and fills in the hole left by that grid piece.
+    }
 }
