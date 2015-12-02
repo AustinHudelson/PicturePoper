@@ -49,15 +49,14 @@ class PieceGrid {
         //Is it best to "fake" an action that takes a certain amount of time by pairing a block with a wait?
         //Is there a better method using RunActionWithCompletionBlock
         //Use the duration property of the returned method?
-        let waitForSwapAnimationAction = SKAction.waitForDuration(Piece.swapActionDuration)
+        let waitForSwapAnimationAction = SKAction.waitForDuration(NSTimeInterval(0.75))
         let handleSwapAction = SKAction.group([executeSwapBlockAction, waitForSwapAnimationAction])
         return handleSwapAction
     }
     
     func removePiece(p: Piece) {
-        //Removes a piece from the grid and fills in the hole.
+        //Removes a piece from the grid does not fill the hole left by this piece.
         p.destroy()
-        p.removeFromParent()
     }
     
     //Fills in hole left by pieces removed.
@@ -106,6 +105,7 @@ class PieceGrid {
                     let moveAction = movingPiece.moveToGridPositionOverTime(newPos)
                     //This action is a BLOCK that runs the move action on the correct piece.
                     //The actions stored in moveActions are not specific to any SKNode
+                    
                     moveActions.append(SKAction.runBlock({
                         movingPiece.runAction(moveAction)
                         self.pieces[newPos.x][newPos.y] = movingPiece
@@ -161,15 +161,65 @@ class PieceGrid {
         
         //Run actions
         //TODO Add input block for animation time
-        self.pieces[0][0].runAction(SKAction.group(moveActions))
-        self.pieces[0][0].runAction(SKAction.group(createAndFallActions))
+        var finalHandleAction: [SKAction] = []
+        for a in moveActions {
+            finalHandleAction.append(a)
+        }
+        finalHandleAction.append(SKAction.waitForDuration(NSTimeInterval(0.5)))
+        for b in createAndFallActions {
+            finalHandleAction.append(b)
+            finalHandleAction.append(SKAction.waitForDuration(NSTimeInterval(0.15)))
+        }
+        //Action to wait for completion of animations
+        finalHandleAction.append(SKAction.runBlock({
+            self.clearAllMatches()
+        }))
+        self.gameScene.runAction(SKAction.sequence(finalHandleAction))
     }
     
     //Bruteforce way of cheching for all matches on the board. could optimize by only checking truly
     //Disturbed pieces.
     func clearAllMatches(){
+        //Create a set of all pieces
+        var allPieces: Set<Piece> = []
+        for q in pieces {
+            for p in q {
+                allPieces.insert(p)
+            }
+        }
+        let matches = Piece.getMatchSet(disturbedPieces: allPieces)
+        //Check for and handle matches once the swap completes.
+        for p in matches {
+            removePiece(p)
+        }
         
+        //Cancle if there are no matches
+        if matches.count == 0 {
+            return
+        }
         
+        //Fill in the holes left in the board after a delay for the destruction animation
+        let delay = SKAction.waitForDuration(NSTimeInterval(1.25))
+        let fallInBlock = SKAction.runBlock({
+            self.fallIn()
+        })
+        
+        self.gameScene.runAction(SKAction.sequence([delay, fallInBlock]))
+    }
+    
+    func randomSwaps() {
+        let swapCount = 5
+        var swaps: [SKAction] = []
+        for _ in 0...swapCount-1 {
+            swaps.append(swapPieces(getRandomPiece(), p2: getRandomPiece()))
+        }
+        gameScene.runAction(SKAction.sequence(swaps))
+    }
+    
+    func getRandomPiece() -> Piece {
+        let r1 = Int.random(0...pieces.count-1)
+        let r2 = Int.random(0...pieces[0].count-1)
+        return pieces[r1][r2]
     }
     
     func setPieceImage(ID: String, image: UIImage){

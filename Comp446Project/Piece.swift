@@ -19,7 +19,7 @@ class Piece: SKSpriteNode {
     private let maxGridY: Int
     private var pieceGrid: PieceGrid
     
-    static let swapActionDuration = NSTimeInterval(0.5)
+    static let swapActionDuration = NSTimeInterval(0.3)
     static let destroyActionDuration = NSTimeInterval(0.5)
     static let matchRequirement = 3
     static let typesOfPieces = 5
@@ -71,20 +71,13 @@ class Piece: SKSpriteNode {
     //MARK: Swipe actions
     
     //All return actions to handle the swipe. Actually handels the swipe
-    private func swipeWith(other: Piece?) ->SKAction? {
+    func swipeWith(other: Piece?) ->SKAction? {
         //TODO Add input blocking for Animation Time
         if other != nil {
             let otherPiece = other!
             let swipeAction = pieceGrid.swapPieces(self, p2:otherPiece)
             runAction(swipeAction, completion: {
-                //Check for and handle matches once the swap completes.
-                let disturbedPieces: Set<Piece> = [self, otherPiece]
-                let matchedPieces: Set<Piece> = Piece.getMatchSet(disturbedPieces: disturbedPieces)
-                //Animated?
-                for p in matchedPieces {
-                    self.pieceGrid.removePiece(p)
-                }
-                self.pieceGrid.fallIn()
+                self.pieceGrid.clearAllMatches()
             })
             return swipeAction
         } else {
@@ -99,8 +92,31 @@ class Piece: SKSpriteNode {
     func swipeRight() -> SKAction? {return swipeWith(getRightPiece())}
     
     func destroy() {
-        //Animate a destruction
         destroyed = true
+        //Animate a destruction particle effect
+        //Setup a particle emitter
+        let emitterPath: String = NSBundle.mainBundle().pathForResource("PieceDestructionParticleEffect", ofType: "sks")!
+        let emitterNode: SKEmitterNode = NSKeyedUnarchiver.unarchiveObjectWithFile(emitterPath) as! SKEmitterNode
+        //emitterNode.position = self.sprite!.position
+        emitterNode.name = "Destroy"
+        emitterNode.zPosition = self.zPosition+20
+        emitterNode.targetNode = self
+        
+        let stopEmittingDelayAction: SKAction = SKAction.waitForDuration(NSTimeInterval(0.2))
+        let stopEmittingAction: SKAction = SKAction.runBlock({
+            emitterNode.particleBirthRate = 0.0
+            self.runAction(SKAction.fadeAlphaTo(0.0, duration: NSTimeInterval(0.5)))
+        })
+        let removeNodeDelayAction: SKAction = SKAction.waitForDuration(NSTimeInterval(1.0))
+        let removeNodeBlock: SKAction = SKAction.runBlock({
+            emitterNode.removeFromParent()
+            self.removeFromParent()
+        })
+        
+        //Start the emitter node, wait half, heal, wait half again, remove the emitter node
+        self.addChild(emitterNode)   //Start the emitter node
+        
+        self.runAction(SKAction.sequence([stopEmittingDelayAction, stopEmittingAction, removeNodeDelayAction, removeNodeBlock]))
     }
     
     //MARK Repositioning pieces
@@ -133,6 +149,14 @@ class Piece: SKSpriteNode {
         let moveOverTimeAction: SKAction = SKAction.moveTo(CGPoint(x:newX, y:newY), duration: Piece.swapActionDuration)
         let moveToGridPositionOverTimeAction = SKAction.sequence([changeGridPositionAction, moveOverTimeAction])
         return moveToGridPositionOverTimeAction
+    }
+    
+    //Does not update my gridPosition variable
+    func simpleMoveToGridPositionOverTime(newPosition: PieceGridPosition) -> SKAction {
+        let newX = (CGFloat(newPosition.x) * self.size.width)+(self.size.width/2.0)+GScene.leftMargin
+        let newY = CGRectGetMaxY(GScene.frame)-((CGFloat(newPosition.y) * self.size.height)+(self.size.height/2.0)+GScene.topMargin)
+        let moveOverTimeAction: SKAction = SKAction.moveTo(CGPoint(x:newX, y:newY), duration: Piece.swapActionDuration)
+        return moveOverTimeAction
     }
     
     //Returns the SKAction that will destroy this piece when ran on the piece.

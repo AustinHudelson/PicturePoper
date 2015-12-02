@@ -11,6 +11,8 @@
 		F44227A31C0BCE10006D8D01 /* CGPointDistanceExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44227A21C0BCE10006D8D01 /* CGPointDistanceExtension.swift */; settings = {ASSET_TAGS = (); }; };
 		F44227A51C0BDBD3006D8D01 /* PieceGridPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44227A41C0BDBD3006D8D01 /* PieceGridPosition.swift */; settings = {ASSET_TAGS = (); }; };
 		F44227A81C0BE026006D8D01 /* PieceGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = F44227A71C0BE026006D8D01 /* PieceGrid.swift */; settings = {ASSET_TAGS = (); }; };
+		F44227AC1C0F0D51006D8D01 /* PieceDestructionParticleEffect.sks in Resources */ = {isa = PBXBuildFile; fileRef = F44227AA1C0F0D51006D8D01 /* PieceDestructionParticleEffect.sks */; settings = {ASSET_TAGS = (); }; };
+		F44227AD1C0F0D51006D8D01 /* spark.png in Resources */ = {isa = PBXBuildFile; fileRef = F44227AB1C0F0D51006D8D01 /* spark.png */; settings = {ASSET_TAGS = (); }; };
 		F4F67B521C0A2FEE007C7B9A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4F67B511C0A2FEE007C7B9A /* AppDelegate.swift */; };
 		F4F67B561C0A2FEE007C7B9A /* PicturePoperGameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4F67B551C0A2FEE007C7B9A /* PicturePoperGameScene.swift */; };
 		F4F67B581C0A2FEE007C7B9A /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4F67B571C0A2FEE007C7B9A /* GameViewController.swift */; };
@@ -45,6 +47,8 @@
 		F44227A21C0BCE10006D8D01 /* CGPointDistanceExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGPointDistanceExtension.swift; sourceTree = "<group>"; };
 		F44227A41C0BDBD3006D8D01 /* PieceGridPosition.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PieceGridPosition.swift; sourceTree = "<group>"; };
 		F44227A71C0BE026006D8D01 /* PieceGrid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PieceGrid.swift; sourceTree = "<group>"; };
+		F44227AA1C0F0D51006D8D01 /* PieceDestructionParticleEffect.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = PieceDestructionParticleEffect.sks; sourceTree = "<group>"; };
+		F44227AB1C0F0D51006D8D01 /* spark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spark.png; sourceTree = "<group>"; };
 		F4F67B4E1C0A2FEE007C7B9A /* Comp446Project.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Comp446Project.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4F67B511C0A2FEE007C7B9A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F4F67B551C0A2FEE007C7B9A /* PicturePoperGameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PicturePoperGameScene.swift; sourceTree = "<group>"; };
@@ -104,6 +108,8 @@
 				F4F67B831C0A35D5007C7B9A /* Piece.swift */,
 				F44227A41C0BDBD3006D8D01 /* PieceGridPosition.swift */,
 				F44227A71C0BE026006D8D01 /* PieceGrid.swift */,
+				F44227AA1C0F0D51006D8D01 /* PieceDestructionParticleEffect.sks */,
+				F44227AB1C0F0D51006D8D01 /* spark.png */,
 			);
 			name = Pieces;
 			sourceTree = "<group>";
@@ -273,6 +279,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F44227AD1C0F0D51006D8D01 /* spark.png in Resources */,
+				F44227AC1C0F0D51006D8D01 /* PieceDestructionParticleEffect.sks in Resources */,
 				F4F67B601C0A2FEE007C7B9A /* LaunchScreen.storyboard in Resources */,
 				F4F67B5D1C0A2FEE007C7B9A /* Assets.xcassets in Resources */,
 				F4F67B5B1C0A2FEE007C7B9A /* Main.storyboard in Resources */,

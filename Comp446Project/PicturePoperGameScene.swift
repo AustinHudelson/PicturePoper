@@ -31,6 +31,10 @@ class PicturePoperGameScene: SKScene {
         }
     }
     
+    func shakeScene() {
+        pieceGrid.randomSwaps()
+    }
+    
     //MARK: Interactions for Controller
     
     func setPieceImage(pieceIDIndex: Int, image: UIImage){
@@ -42,11 +46,6 @@ class PicturePoperGameScene: SKScene {
     override func didMoveToView(view: SKView) {
         /* Setup your scene here */
         pieceGrid = PieceGrid(scene: self)
-        myLabel = SKLabelNode(fontNamed:"Chalkduster")
-        myLabel.text = "\(CGRectGetMaxY(self.frame))  \(CGRectGetMaxX(self.frame))"
-        myLabel.fontSize = 16;
-        myLabel.position = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame));
-        self.addChild(myLabel)
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {

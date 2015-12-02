@@ -106,13 +106,48 @@ class GameViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         return true
     }
     
-    //MARK : imagePicking
+    //MARK: Shakeing
+    
+    @IBAction func shakeScene(sender: UIButton) {
+        gameScene?.shakeScene()
+    }
+    
+    override func canBecomeFirstResponder() -> Bool {
+        return true
+    }
+    
+    override func motionEnded(motion: UIEventSubtype, withEvent event: UIEvent?) {
+        if motion == .MotionShake {
+            gameScene?.shakeScene()
+        }
+    }
+    
+    
+    //MARK : IMAGE FROM LIBRARY
     
     let imagePicker = UIImagePickerController()
     
     @IBAction func chooseImage(sender: UIButton) {
         imagePicker.allowsEditing = true //Allow an edited photo
         imagePicker.sourceType = .PhotoLibrary //location of images
+        if #available(iOS 8.0, *) {
+            imagePicker.modalPresentationStyle = .Popover
+        } else {
+            // Fallback on earlier versions
+            imagePicker.modalPresentationStyle = .FullScreen
+        }
+        presentViewController(imagePicker, animated: true, completion: nil)//Present the picker
+    }
+    
+    @IBAction func takePicture(sender: UIButton) {
+        imagePicker.allowsEditing = true //Allow an edited photo
+        imagePicker.sourceType = .Camera //location of images
+        if #available(iOS 8.0, *) {
+            imagePicker.modalPresentationStyle = .Popover
+        } else {
+            // Fallback on earlier versions
+            imagePicker.modalPresentationStyle = .FullScreen
+        }
         presentViewController(imagePicker, animated: true, completion: nil)//Present the picker
     }
     
@@ -123,13 +158,9 @@ class GameViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         picker: UIImagePickerController,
         didFinishPickingMediaWithInfo info: [String : AnyObject])
     {
-        let chosenImage = info[UIImagePickerControllerOriginalImage] as! UIImage //2
+        
+        let chosenImage = info[UIImagePickerControllerEditedImage] as! UIImage //2
         //Save the image in to the remembered image dictionary
-        for index in 0...Piece.typesOfPieces-1 {
-            if let storedImage = fetchImageForPieceID(String(index)) {
-                gameScene!.setPieceImage(index, image: storedImage)
-            }
-        }
         storeImageForPieceID(String(setImageNumber), image: chosenImage)
         
         //Attempt to use stored image, but default to picked image if needed

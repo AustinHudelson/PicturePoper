@@ -21,16 +21,36 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ucx-yo-ypC">
                                 <rect key="frame" x="546" y="527" width="34" height="53"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="34"/>
-                                <state key="normal" title="📷"/>
+                                <state key="normal" title="📂"/>
                                 <connections>
                                     <action selector="chooseImage:" destination="BV1-FR-VrT" eventType="touchUpInside" id="aiC-32-tns"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="T3F-Y2-IQZ">
+                                <rect key="frame" x="498" y="527" width="34" height="53"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="34"/>
+                                <state key="normal" title="📷"/>
+                                <connections>
+                                    <action selector="takePicture:" destination="BV1-FR-VrT" eventType="touchUpInside" id="i1W-mb-FOr"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ACG-Bi-B0F">
+                                <rect key="frame" x="450" y="527" width="34" height="53"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="34"/>
+                                <state key="normal" title="🔄"/>
+                                <connections>
+                                    <action selector="shakeScene:" destination="BV1-FR-VrT" eventType="touchUpInside" id="Dn3-iZ-OGl"/>
                                 </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="T3F-Y2-IQZ" firstAttribute="bottom" secondItem="Ucx-yo-ypC" secondAttribute="bottom" id="0zn-iN-Xd6"/>
+                            <constraint firstItem="ACG-Bi-B0F" firstAttribute="bottom" secondItem="Ucx-yo-ypC" secondAttribute="bottom" id="GYs-DW-gcR"/>
                             <constraint firstItem="qHh-Mt-9TT" firstAttribute="top" secondItem="Ucx-yo-ypC" secondAttribute="bottom" constant="20" id="Qfz-6H-p1K"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Ucx-yo-ypC" secondAttribute="trailing" id="ZSj-hk-Vmi"/>
+                            <constraint firstItem="T3F-Y2-IQZ" firstAttribute="leading" secondItem="ACG-Bi-B0F" secondAttribute="trailing" constant="14" id="r8v-LX-dYy"/>
+                            <constraint firstItem="Ucx-yo-ypC" firstAttribute="leading" secondItem="T3F-Y2-IQZ" secondAttribute="trailing" constant="14" id="sv3-Ht-Zvd"/>
                         </constraints>
                     </view>
                 </viewController>
