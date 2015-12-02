@@ -24,7 +24,11 @@ class PicturePoperGameScene: SKScene {
     var myLabel: SKLabelNode!
     var pieceGrid: PieceGrid!
     var animating: Bool = false //Toggles if animation is in progress. if yes then touch input to the pieces is blocked.
-    var selectedPiece: Piece? = nil
+    var selectedPiece: Piece? = nil {
+        didSet {
+            print(selectedPiece)
+        }
+    }
     
     //MARK: Interactions for Controller
     
@@ -58,6 +62,7 @@ class PicturePoperGameScene: SKScene {
     override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
         /* Called when a touch moves */
         let minimumMovedDistance: CGFloat = 50.0
+        print("Moved")
         if (selectedPiece != nil && animating == false) {
             for touch in touches {
                 if minimumMovedDistance < CGPoint.getDistance(selectedPiece!.position, p2:touch.locationInNode(self)) {
@@ -71,16 +76,18 @@ class PicturePoperGameScene: SKScene {
                         default: continue
                     }
                     selectedPiece = nil
-                    if swapAction != nil {
-                        let startAnimating = SKAction.runBlock({
-                            self.animating = true
-                        })
-                        let stopAnimating = SKAction.runBlock({
-                            self.animating = false
-                        })
-                        let handleSwipeAction = SKAction.sequence([startAnimating, swapAction!, stopAnimating])
-                        runAction(handleSwipeAction)
-                    }
+//                    if swapAction != nil {
+//                        let startAnimating = SKAction.runBlock({
+//                            self.animating = true
+//                        })
+//                        let stopAnimating = SKAction.runBlock({
+//                            self.animating = false
+//                        })
+//                        let handleSwipeAction = SKAction.sequence([startAnimating, swapAction!, stopAnimating])
+//                        
+//                        //Run the swipe then check for matches
+//                        runAction(handleSwipeAction)
+//                    }
                 }
             }
         }

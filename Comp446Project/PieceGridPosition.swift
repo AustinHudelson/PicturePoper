@@ -50,6 +50,16 @@ class PieceGridPosition {
         return nil
     }
     
+    func getBelowPositionBy(slots: Int) -> PieceGridPosition {
+        var returnPosition = self.copy()
+        var i = 0
+        while (i < slots) {
+            returnPosition = returnPosition.getBelowPosition()!
+            i += 1
+        }
+        return returnPosition
+    }
+    
     func copy() -> PieceGridPosition {
         return PieceGridPosition(x: self.x, y: self.y)!
     }

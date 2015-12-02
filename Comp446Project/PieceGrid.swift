@@ -8,9 +8,12 @@
 
 import SpriteKit
 class PieceGrid {
-    var pieces: [[Piece]] = [[]]
+    var pieces: [[Piece]] = []
+    var iDImages: [String:UIImage] = [String:UIImage]()
+    private var gameScene: PicturePoperGameScene
     
     init (scene: PicturePoperGameScene) {
+        gameScene = scene
         //Add the initial Pieces
         for i in 0...PieceGridPosition.maxX {
             pieces.append([])
@@ -24,6 +27,8 @@ class PieceGrid {
                 scene.addChild(newPiece)
             }
         }
+        print(pieces.count)
+        print(pieces[0].count)
     }
     
     func getPiece(pos: PieceGridPosition) -> Piece {
@@ -46,14 +51,116 @@ class PieceGrid {
         //Use the duration property of the returned method?
         let waitForSwapAnimationAction = SKAction.waitForDuration(Piece.swapActionDuration)
         let handleSwapAction = SKAction.group([executeSwapBlockAction, waitForSwapAnimationAction])
-        
-        //After swap check for matches?
-        
         return handleSwapAction
     }
     
     func removePiece(p: Piece) {
-        //Removes a piece from the grid and fills in the hole left by that grid piece.
+        //Removes a piece from the grid and fills in the hole.
+        p.destroy()
+        p.removeFromParent()
+    }
+    
+    //Fills in hole left by pieces removed.
+    func fallIn() {
+        var fallCount = 0
+        var fallBy: [[Int]] = []
+        var pieceDrops: [Int] = []
+        print(pieces)
+        print(pieces.count)
+        print(pieces[0].count)
+        
+        //Initialize fallby and pieceDrop arrays
+        for x in 0...pieces.count-1 {
+            fallBy.append([])
+            pieceDrops.append(0)
+            for _ in 0...pieces[x].count-1 {
+                fallBy[x].append(0)
+            }
+        }
+        
+        //Fillin the fallBy and pieceDrop arrays
+        for x in 0...pieces.count-1 {
+            fallCount = 0
+            var y = pieces[x].count
+            //Iterate over column backwards (from top to bottom)
+            while (y > 0){
+                y -= 1
+                if pieces[x][y].destroyed == true {
+                    fallCount += 1
+                    fallBy[x][y] = 0
+                } else {
+                    fallBy[x][y] = fallCount
+                }
+            }
+            pieceDrops[x] = fallCount
+        }
+        
+        //Existing piece drop downs
+        
+        var moveActions: [SKAction] = []
+        
+        for x in 0...pieces.count-1 {
+            for y in 0...pieces[x].count-1{
+                //Does the piece at x y need to fall?
+                if fallBy[x][y] != 0 {
+                    //Create and add the movement action to themove array
+                    let newPos = pieces[x][y].gridPosition.getBelowPositionBy(fallBy[x][y])
+                    let moveAction = pieces[x][y].moveToGridPositionOverTime(newPos)
+                    //This action is a BLOCK that runs the move action on the correct piece.
+                    //The actions stored in moveActions are not specific to any SKNode
+                    moveActions.append(SKAction.runBlock({
+                        //Move in array?
+                        self.pieces[x][y].runAction(moveAction)
+                    }))
+                    //let moveP1 = p1.moveToGridPositionOverTime(p2.gridPosition.copy())
+                }
+            }
+        }
+        
+        //New Piece Fallins
+        
+        var createAndFallActions: [SKAction] = []
+        
+        
+        for x in 0...pieceDrops.count-1 {
+            var dropInNumber = 0
+            //Using pieces[x][0] as example.
+            //A piece in the top row. Does not matter if it was just destroyed
+            let examplePiece: Piece = pieces[x][0]
+            let examplePieceXPosition = examplePiece.position.x
+            let examplePieceYPosition = examplePiece.position.y
+            while (dropInNumber < pieceDrops[x]){
+                //Init a new piece and drop it in
+                dropInNumber += 1
+                let destinationPosition = PieceGridPosition(x: x, y: pieceDrops[x]-dropInNumber)!
+                let aboveSceneX = examplePieceXPosition
+                //Position above the grid initially to allow a smooth dropin
+                let aboveSceneY = examplePieceYPosition + (CGFloat(pieceDrops[x]) * examplePiece.size.height)
+                let newPieceFallingAction: SKAction = SKAction.runBlock({
+                    let newPieceID = String(Int.random(0...Piece.typesOfPieces-1))
+                    
+                    var newPieceTexture = SKTexture(imageNamed: "Spaceship")
+                    if let newPieceImage: UIImage = self.iDImages[newPieceID] {
+                        newPieceTexture = SKTexture(image: newPieceImage)
+                    }
+                    
+                    //Declairing the piece automatically adds it to the scene so immediately reposition
+                    let newPiece = Piece(initialTexture: newPieceTexture, gameScene: self.gameScene, initialGridPosition: destinationPosition, grid: self, id: newPieceID)
+                    newPiece.position = CGPoint(x: aboveSceneX, y: aboveSceneY)
+                    //Fall in Action
+                    let fallAction = newPiece.moveToGridPositionOverTime(destinationPosition)
+                    newPiece.runAction(fallAction)
+                    //Overwrite the old piece in the array
+                    self.pieces[destinationPosition.x][destinationPosition.y] = newPiece
+                })
+                createAndFallActions.append(newPieceFallingAction)
+            }
+        }
+        
+        //Run actions
+        //TODO Add input block for animation time
+        self.pieces[0][0].runAction(SKAction.group(moveActions))
+        self.pieces[0][0].runAction(SKAction.group(createAndFallActions))
     }
     
     func setPieceImage(ID: String, image: UIImage){

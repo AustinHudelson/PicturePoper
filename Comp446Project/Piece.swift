@@ -33,7 +33,6 @@ class Piece: SKSpriteNode {
         //Hopefully unique ID for each description of the texture.
         //ID will be used to check for matches
         ID = id
-        print(ID)
         let dimention = max(min((CGRectGetMaxX(gameScene.frame)-(gameScene.borderX))/CGFloat(maxGridX), (CGRectGetMaxY(gameScene.frame)-(gameScene.borderY))/CGFloat(maxGridY)), 5)
         //Give the sprite a random color for now.
         let randomColor: UIColor = ([UIColor.blackColor(), UIColor.blueColor(), UIColor.whiteColor()])[Int.random(0...2)]
@@ -69,51 +68,42 @@ class Piece: SKSpriteNode {
         return nil
     }
     
-    //All return actions to handle the swipe. Does not handle it.
-    func swipeUp() -> SKAction? {
-        print("up")
-        if let otherPiece = getAbovePiece() {
-            return pieceGrid.swapPieces(self, p2:otherPiece)
+    //MARK: Swipe actions
+    
+    //All return actions to handle the swipe. Actually handels the swipe
+    private func swipeWith(other: Piece?) ->SKAction? {
+        //TODO Add input blocking for Animation Time
+        if other != nil {
+            let otherPiece = other!
+            let swipeAction = pieceGrid.swapPieces(self, p2:otherPiece)
+            runAction(swipeAction, completion: {
+                //Check for and handle matches once the swap completes.
+                let disturbedPieces: Set<Piece> = [self, otherPiece]
+                let matchedPieces: Set<Piece> = Piece.getMatchSet(disturbedPieces: disturbedPieces)
+                //Animated?
+                for p in matchedPieces {
+                    self.pieceGrid.removePiece(p)
+                }
+                self.pieceGrid.fallIn()
+            })
+            return swipeAction
         } else {
             //Error move
             return nil
         }
     }
     
-    func swipeDown() -> SKAction? {
-        print("down")
-        if let otherPiece = getBelowPiece() {
-            return pieceGrid.swapPieces(self, p2:otherPiece)
-        } else {
-            //Error move
-            return nil
-        }
-    }
-    
-    func swipeLeft() -> SKAction? {
-        print("Left")
-        if let otherPiece = getLeftPiece() {
-            return pieceGrid.swapPieces(self, p2:otherPiece)
-        } else {
-            //Error move
-            return nil
-        }
-    }
-    
-    func swipeRight() -> SKAction? {
-        print("Right")
-        if let otherPiece = getRightPiece() {
-            return pieceGrid.swapPieces(self, p2:otherPiece)
-        } else {
-            //Error move
-            return nil
-        }
-    }
+    func swipeUp() -> SKAction? {return swipeWith(getAbovePiece())}
+    func swipeDown() -> SKAction? {return swipeWith(getBelowPiece())}
+    func swipeLeft() -> SKAction? {return swipeWith(getLeftPiece())}
+    func swipeRight() -> SKAction? {return swipeWith(getRightPiece())}
     
     func destroy() {
         //Animate a destruction
         destroyed = true
     }
+    
+    //MARK Repositioning pieces
     
     //Immediately resizes and places the piece at its current XY grid position in the scene
     func reposition() {
