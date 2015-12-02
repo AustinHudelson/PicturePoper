@@ -99,11 +99,8 @@ class PicturePoperGameScene: SKScene {
         }
     }
    
-    override func update(currentTime: CFTimeInterval) {
-        /* Called before each frame is rendered */
-        //myLabel.text = "\(CGRectGetMaxY(self.frame))  \(CGRectGetMaxX(self.frame)) \(currentTime)"
-        myLabel.position = CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame));
-    }
+    //override func update(currentTime: CFTimeInterval) {
+    //}
     
     override func didChangeSize(oldSize: CGSize) {
         myLabel?.text = "\(self.size.height) \(self.size.width)"

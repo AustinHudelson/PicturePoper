@@ -9,8 +9,8 @@
 import Foundation
 //Basically just a wraper class for a tuple with two numbers
 class PieceGridPosition {
-    static let maxX: Int = 5 //Indexing begins at 0 so add 1 for number of rows/columns
-    static let maxY: Int = 5
+    static let maxX: Int = 4 //Indexing begins at 0 so add 1 for number of rows/columns
+    static let maxY: Int = 4
     var x: Int
     var y: Int
     

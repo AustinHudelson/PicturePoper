@@ -208,12 +208,34 @@ class PieceGrid {
     }
     
     func randomSwaps() {
-        let swapCount = 5
+        let swapCount = 7
         var swaps: [SKAction] = []
+        var swapedPieces: Set<Piece> = []
+        var p1: Piece?
+        var p2: Piece?
         for _ in 0...swapCount-1 {
-            swaps.append(swapPieces(getRandomPiece(), p2: getRandomPiece()))
+            //Randomly pick pieces till you find 2 that are not being swaped yet
+            while true {
+                p1 = getRandomPiece()
+                if swapedPieces.contains(p1!) {
+                    continue
+                } else {
+                    swapedPieces.insert(p1!)
+                    break
+                }
+            }
+            while true {
+                p2 = getRandomPiece()
+                if swapedPieces.contains(p2!) {
+                    continue
+                } else {
+                    swapedPieces.insert(p2!)
+                    break
+                }
+            }
+            swaps.append(swapPieces(p1!, p2: p2!))
         }
-        gameScene.runAction(SKAction.sequence(swaps))
+        gameScene.runAction(SKAction.group(swaps))
     }
     
     func getRandomPiece() -> Piece {

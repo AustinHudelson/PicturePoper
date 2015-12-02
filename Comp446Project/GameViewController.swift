@@ -83,6 +83,8 @@ class GameViewController: UIViewController, UIImagePickerControllerDelegate, UIN
                 gameScene!.setPieceImage(index, image: storedImage)
             }
         }
+        
+        gameScene!.pieceGrid.clearAllMatches()
     }
 
     override func shouldAutorotate() -> Bool {
@@ -108,7 +110,7 @@ class GameViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     
     //MARK: Shakeing
     
-    @IBAction func shakeScene(sender: UIButton) {
+    @IBAction func shakeScene(sender: UIBarButtonItem) {
         gameScene?.shakeScene()
     }
     
@@ -127,11 +129,12 @@ class GameViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     
     let imagePicker = UIImagePickerController()
     
-    @IBAction func chooseImage(sender: UIButton) {
+    @IBAction func chooseImage(sender: UIBarButtonItem) {
         imagePicker.allowsEditing = true //Allow an edited photo
         imagePicker.sourceType = .PhotoLibrary //location of images
         if #available(iOS 8.0, *) {
             imagePicker.modalPresentationStyle = .Popover
+            imagePicker.popoverPresentationController?.barButtonItem = sender
         } else {
             // Fallback on earlier versions
             imagePicker.modalPresentationStyle = .FullScreen
@@ -139,11 +142,12 @@ class GameViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         presentViewController(imagePicker, animated: true, completion: nil)//Present the picker
     }
     
-    @IBAction func takePicture(sender: UIButton) {
+    @IBAction func takePicture(sender: UIBarButtonItem) {
         imagePicker.allowsEditing = true //Allow an edited photo
         imagePicker.sourceType = .Camera //location of images
         if #available(iOS 8.0, *) {
             imagePicker.modalPresentationStyle = .Popover
+            imagePicker.popoverPresentationController?.barButtonItem = sender
         } else {
             // Fallback on earlier versions
             imagePicker.modalPresentationStyle = .FullScreen
