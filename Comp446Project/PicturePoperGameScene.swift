@@ -26,6 +26,7 @@ class PicturePoperGameScene: SKScene {
     var animating: Bool = false //Toggles if animation is in progress. if yes then touch input to the pieces is blocked.
     var selectedPiece: Piece? = nil {
         didSet {
+            print("Selected:")
             print(selectedPiece)
         }
     }
@@ -62,7 +63,6 @@ class PicturePoperGameScene: SKScene {
     override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
         /* Called when a touch moves */
         let minimumMovedDistance: CGFloat = 50.0
-        print("Moved")
         if (selectedPiece != nil && animating == false) {
             for touch in touches {
                 if minimumMovedDistance < CGPoint.getDistance(selectedPiece!.position, p2:touch.locationInNode(self)) {

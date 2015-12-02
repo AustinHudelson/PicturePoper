@@ -183,6 +183,7 @@ class Piece: SKSpriteNode {
         return []
     }
     
+    //Checks the disturbed peices if they are in a match...
     static func getMatchSet(disturbedPieces pieces: Set<Piece>) -> Set<Piece> {
         var returnSet: Set<Piece> = []
         for p in pieces {

@@ -65,9 +65,6 @@ class PieceGrid {
         var fallCount = 0
         var fallBy: [[Int]] = []
         var pieceDrops: [Int] = []
-        print(pieces)
-        print(pieces.count)
-        print(pieces[0].count)
         
         //Initialize fallby and pieceDrop arrays
         for x in 0...pieces.count-1 {
@@ -104,13 +101,14 @@ class PieceGrid {
                 //Does the piece at x y need to fall?
                 if fallBy[x][y] != 0 {
                     //Create and add the movement action to themove array
-                    let newPos = pieces[x][y].gridPosition.getBelowPositionBy(fallBy[x][y])
-                    let moveAction = pieces[x][y].moveToGridPositionOverTime(newPos)
+                    let movingPiece = pieces[x][y]
+                    let newPos = movingPiece.gridPosition.getBelowPositionBy(fallBy[x][y])
+                    let moveAction = movingPiece.moveToGridPositionOverTime(newPos)
                     //This action is a BLOCK that runs the move action on the correct piece.
                     //The actions stored in moveActions are not specific to any SKNode
                     moveActions.append(SKAction.runBlock({
-                        //Move in array?
-                        self.pieces[x][y].runAction(moveAction)
+                        movingPiece.runAction(moveAction)
+                        self.pieces[newPos.x][newPos.y] = movingPiece
                     }))
                     //let moveP1 = p1.moveToGridPositionOverTime(p2.gridPosition.copy())
                 }
@@ -132,11 +130,14 @@ class PieceGrid {
             while (dropInNumber < pieceDrops[x]){
                 //Init a new piece and drop it in
                 dropInNumber += 1
+                print("Dropping in action create")
                 let destinationPosition = PieceGridPosition(x: x, y: pieceDrops[x]-dropInNumber)!
                 let aboveSceneX = examplePieceXPosition
                 //Position above the grid initially to allow a smooth dropin
                 let aboveSceneY = examplePieceYPosition + (CGFloat(pieceDrops[x]) * examplePiece.size.height)
                 let newPieceFallingAction: SKAction = SKAction.runBlock({
+                    print("Building a new piece")
+                    print("\(destinationPosition.x)\(destinationPosition.y)")
                     let newPieceID = String(Int.random(0...Piece.typesOfPieces-1))
                     
                     var newPieceTexture = SKTexture(imageNamed: "Spaceship")
@@ -147,6 +148,7 @@ class PieceGrid {
                     //Declairing the piece automatically adds it to the scene so immediately reposition
                     let newPiece = Piece(initialTexture: newPieceTexture, gameScene: self.gameScene, initialGridPosition: destinationPosition, grid: self, id: newPieceID)
                     newPiece.position = CGPoint(x: aboveSceneX, y: aboveSceneY)
+                    self.gameScene.addChild(newPiece)
                     //Fall in Action
                     let fallAction = newPiece.moveToGridPositionOverTime(destinationPosition)
                     newPiece.runAction(fallAction)
@@ -163,7 +165,15 @@ class PieceGrid {
         self.pieces[0][0].runAction(SKAction.group(createAndFallActions))
     }
     
+    //Bruteforce way of cheching for all matches on the board. could optimize by only checking truly
+    //Disturbed pieces.
+    func clearAllMatches(){
+        
+        
+    }
+    
     func setPieceImage(ID: String, image: UIImage){
+        iDImages[ID] = image
         for p in pieces {
             for q in p {
                 if q.ID == ID {
