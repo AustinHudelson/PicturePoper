@@ -13,25 +13,10 @@ class GameViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     
     var gameScene: PicturePoperGameScene?
     
-    
-    
-//    var pictures: [NSData] {
-//        get {
-//            if let values = userDataStorage.objectForKey(searchKey) as? [NSData] {
-//                return values
-//            } else {
-//                let r: [String:UIImage] = [String:UIImage]()
-//                return r
-//            }
-//        }
-//        set {
-//            userDataStorage.setObject(newValue, forKey: searchKey)
-//        }
-//    }
-    
-    //MARK user Data Storage for images
+    //MARK: User Data Storage
     private let userDataStorage = NSUserDefaults.standardUserDefaults()
     private let dataKey = "PicturePoper.Images."    //Image id should be added after
+    //Stores an image in the devices memory
     private func storeImageForPieceID(ID: String, image: UIImage){
         let finalUserDataStorageKey = "\(dataKey)\(ID)"
         let imageData: NSData? = UIImageJPEGRepresentation(image, 0.1)
@@ -41,7 +26,7 @@ class GameViewController: UIViewController, UIImagePickerControllerDelegate, UIN
             print("ERROR STORING IMAGE DATA")
         }
     }
-    
+    //Retrieves an image from the device's memory
     private func fetchImageForPieceID(ID: String) -> UIImage? {
         let finalFetchKey: String = "\(dataKey)\(ID)"
         if let fetchedData = userDataStorage.objectForKey(finalFetchKey) as? NSData {
@@ -53,6 +38,8 @@ class GameViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         }
         return nil
     }
+    
+    //MARK: View Controller Settings
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,20 +49,18 @@ class GameViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         let scene = PicturePoperGameScene(size: self.view.frame.size)
         self.gameScene = scene
         
-        if 1==1 {
-            // Configure the view.
-            let skView = self.view as! SKView
+        // Configure the view.
+        let skView = self.view as! SKView
             
-            /* Sprite Kit applies additional optimizations to improve rendering performance */
-            skView.ignoresSiblingOrder = true
+        /* Sprite Kit applies additional optimizations to improve rendering performance */
+        skView.ignoresSiblingOrder = true
             
-            /* Set the scale mode to scale to fit the window */
-            scene.scaleMode = SKSceneScaleMode.ResizeFill
+        /* Set the scale mode to scale to fit the window */
+        scene.scaleMode = SKSceneScaleMode.ResizeFill
             
-            scene.backgroundColor = UIColor.blackColor()
+        scene.backgroundColor = UIColor.blackColor()
             
-            skView.presentScene(scene)
-        }
+        skView.presentScene(scene)
         
         //Load stored images in to the scene
         for index in 0...Piece.typesOfPieces-1 {
@@ -84,6 +69,7 @@ class GameViewController: UIViewController, UIImagePickerControllerDelegate, UIN
             }
         }
         
+        //Clear the initial matches on the game board
         gameScene!.pieceGrid.clearAllMatches()
     }
 
@@ -108,7 +94,7 @@ class GameViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         return true
     }
     
-    //MARK: Shakeing
+    //MARK: Shake gesture
     
     @IBAction func shakeScene(sender: UIBarButtonItem) {
         gameScene?.shakeScene()
@@ -125,7 +111,7 @@ class GameViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     }
     
     
-    //MARK : IMAGE FROM LIBRARY
+    //MARK: Piece Image Camera/Photolib
     
     let imagePicker = UIImagePickerController()
     
@@ -163,7 +149,7 @@ class GameViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         didFinishPickingMediaWithInfo info: [String : AnyObject])
     {
         
-        let chosenImage = info[UIImagePickerControllerEditedImage] as! UIImage //2
+        let chosenImage = info[UIImagePickerControllerEditedImage] as! UIImage
         //Save the image in to the remembered image dictionary
         storeImageForPieceID(String(setImageNumber), image: chosenImage)
         
@@ -174,12 +160,11 @@ class GameViewController: UIViewController, UIImagePickerControllerDelegate, UIN
             gameScene?.setPieceImage(setImageNumber, image: chosenImage)
         }
         
+        //Increment setImage number to change the next image that will be set
         setImageNumber = (setImageNumber+1)%Piece.typesOfPieces
-        //myImageView.contentMode = .ScaleAspectFit
-        //myImageView.image = chosenImage
-        dismissViewControllerAnimated(true, completion: nil) //5
+        dismissViewControllerAnimated(true, completion: nil)
     }
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-        dismissViewControllerAnimated(true, completion: nil) //5
+        dismissViewControllerAnimated(true, completion: nil)
     }
 }

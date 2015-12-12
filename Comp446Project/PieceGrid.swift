@@ -27,14 +27,13 @@ class PieceGrid {
                 scene.addChild(newPiece)
             }
         }
-        print(pieces.count)
-        print(pieces[0].count)
     }
     
     func getPiece(pos: PieceGridPosition) -> Piece {
         return pieces[pos.x][pos.y]
     }
     
+    //Returns an action that swaps two pieces. This function is called by a PIECE. not the game scene
     func swapPieces(p1: Piece, p2: Piece) -> SKAction {
         let moveP1 = p1.moveToGridPositionOverTime(p2.gridPosition.copy())
         let moveP2 = p2.moveToGridPositionOverTime(p1.gridPosition.copy())
@@ -59,7 +58,7 @@ class PieceGrid {
         p.destroy()
     }
     
-    //Fills in hole left by pieces removed.
+    //Fills in hole left by pieces removed, checks for destroyed pieces and replaces them.
     func fallIn() {
         var fallCount = 0
         var fallBy: [[Int]] = []
@@ -130,14 +129,11 @@ class PieceGrid {
             while (dropInNumber < pieceDrops[x]){
                 //Init a new piece and drop it in
                 dropInNumber += 1
-                print("Dropping in action create")
                 let destinationPosition = PieceGridPosition(x: x, y: pieceDrops[x]-dropInNumber)!
                 let aboveSceneX = examplePieceXPosition
                 //Position above the grid initially to allow a smooth dropin
                 let aboveSceneY = examplePieceYPosition + (CGFloat(pieceDrops[x]) * examplePiece.size.height)
                 let newPieceFallingAction: SKAction = SKAction.runBlock({
-                    print("Building a new piece")
-                    print("\(destinationPosition.x)\(destinationPosition.y)")
                     let newPieceID = String(Int.random(0...Piece.typesOfPieces-1))
                     
                     var newPieceTexture = SKTexture(imageNamed: "Spaceship")
@@ -207,6 +203,7 @@ class PieceGrid {
         self.gameScene.runAction(SKAction.sequence([delay, fallInBlock]))
     }
     
+    //Handle for when device is shaken
     func randomSwaps() {
         let swapCount = 7
         var swaps: [SKAction] = []

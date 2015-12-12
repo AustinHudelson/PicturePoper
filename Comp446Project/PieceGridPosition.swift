@@ -50,6 +50,7 @@ class PieceGridPosition {
         return nil
     }
     
+    //Used when pieces are falling
     func getBelowPositionBy(slots: Int) -> PieceGridPosition {
         var returnPosition = self.copy()
         var i = 0

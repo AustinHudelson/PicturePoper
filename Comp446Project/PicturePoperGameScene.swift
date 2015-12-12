@@ -24,10 +24,10 @@ class PicturePoperGameScene: SKScene {
     var myLabel: SKLabelNode!
     var pieceGrid: PieceGrid!
     var animating: Bool = false //Toggles if animation is in progress. if yes then touch input to the pieces is blocked.
-    var selectedPiece: Piece? = nil {
+    var selectedPiece: Piece? = nil { //Refers to the currently selected piece
         didSet {
-            print("Selected:")
-            print(selectedPiece)
+            //print("Selected:")
+            //print(selectedPiece)
         }
     }
     
@@ -61,11 +61,14 @@ class PicturePoperGameScene: SKScene {
     
     override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
         /* Called when a touch moves */
+        //Check if the selected piece has been moved enough to execute a swap, and execute it if necessary
         let minimumMovedDistance: CGFloat = 50.0
         if (selectedPiece != nil && animating == false) {
             for touch in touches {
+                //Distance from touch location to selected piece
                 if minimumMovedDistance < CGPoint.getDistance(selectedPiece!.position, p2:touch.locationInNode(self)) {
-                    print("A\(selectedPiece!.position), \(touch.locationInView(self.view))")
+                    //print("A\(selectedPiece!.position), \(touch.locationInView(self.view))")
+                    //TODO lock animation while swapAction is running (and it's children)
                     var swapAction: SKAction?
                     switch (touch.directionFromPoint(selectedPiece!.position, inNode: selectedPiece!.parent!)){
                         case "Up": swapAction = selectedPiece!.swipeUp()
@@ -75,18 +78,6 @@ class PicturePoperGameScene: SKScene {
                         default: continue
                     }
                     selectedPiece = nil
-//                    if swapAction != nil {
-//                        let startAnimating = SKAction.runBlock({
-//                            self.animating = true
-//                        })
-//                        let stopAnimating = SKAction.runBlock({
-//                            self.animating = false
-//                        })
-//                        let handleSwipeAction = SKAction.sequence([startAnimating, swapAction!, stopAnimating])
-//                        
-//                        //Run the swipe then check for matches
-//                        runAction(handleSwipeAction)
-//                    }
                 }
             }
         }
@@ -94,16 +85,18 @@ class PicturePoperGameScene: SKScene {
     
     override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
         /* Called when a touch ends */
+        //When a touch is over unselect the piece
         if touches.count != 0 {
             selectedPiece = nil
         }
     }
    
+    //Spritekit is cool. Dont even need an update function
     //override func update(currentTime: CFTimeInterval) {
     //}
     
+    //Update the scene and pieces when rotation happens.
     override func didChangeSize(oldSize: CGSize) {
-        myLabel?.text = "\(self.size.height) \(self.size.width)"
         if pieceGrid != nil {   //Scene has to have been presented
             for p in pieceGrid.pieces {
                 for q in p {

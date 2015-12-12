@@ -41,7 +41,7 @@ class Piece: SKSpriteNode {
         moveToGridPositionInstantly(gridPosition)
     }
     
-    //Returns an action that will cause the sequence to run
+    //Gets the piece on the game board relative to this piece's current position
     
     private func getAbovePiece() -> Piece? {
         if let newGridPosition = gridPosition.getAbovePosition() {
@@ -70,7 +70,8 @@ class Piece: SKSpriteNode {
     
     //MARK: Swipe actions
     
-    //All return actions to handle the swipe. Actually handels the swipe
+    //Creates, starts and returns an SK Action to swap a piece with another piece
+    //This action will handle everything necessary
     func swipeWith(other: Piece?) ->SKAction? {
         //TODO Add input blocking for Animation Time
         if other != nil {
@@ -99,7 +100,7 @@ class Piece: SKSpriteNode {
         let emitterNode: SKEmitterNode = NSKeyedUnarchiver.unarchiveObjectWithFile(emitterPath) as! SKEmitterNode
         //emitterNode.position = self.sprite!.position
         emitterNode.name = "Destroy"
-        emitterNode.zPosition = self.zPosition+20
+        emitterNode.zPosition = self.zPosition-20
         emitterNode.targetNode = self
         
         let stopEmittingDelayAction: SKAction = SKAction.waitForDuration(NSTimeInterval(0.2))
@@ -119,7 +120,7 @@ class Piece: SKSpriteNode {
         self.runAction(SKAction.sequence([stopEmittingDelayAction, stopEmittingAction, removeNodeDelayAction, removeNodeBlock]))
     }
     
-    //MARK Repositioning pieces
+    //MARK: Repositioning pieces
     
     //Immediately resizes and places the piece at its current XY grid position in the scene
     func reposition() {
@@ -140,7 +141,6 @@ class Piece: SKSpriteNode {
     //Running the action alone on the Piece will not update its position in the PieceGrid either
     func moveToGridPositionOverTime(newPosition: PieceGridPosition) -> SKAction {
         let changeGridPositionAction = SKAction.runBlock({
-            print("Moving to: \(newPosition.x), \(newPosition.y)")
             self.gridPosition.x = newPosition.x
             self.gridPosition.y = newPosition.y
         })
@@ -151,7 +151,7 @@ class Piece: SKSpriteNode {
         return moveToGridPositionOverTimeAction
     }
     
-    //Does not update my gridPosition variable
+    //does not run or update my gridPosition variable
     func simpleMoveToGridPositionOverTime(newPosition: PieceGridPosition) -> SKAction {
         let newX = (CGFloat(newPosition.x) * self.size.width)+(self.size.width/2.0)+GScene.leftMargin
         let newY = CGRectGetMaxY(GScene.frame)-((CGFloat(newPosition.y) * self.size.height)+(self.size.height/2.0)+GScene.topMargin)
@@ -174,9 +174,7 @@ class Piece: SKSpriteNode {
         return destroy
     }
     
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    //MARK: Matches
     
     func isAMatch(otherPiece: Piece) -> Bool {
         if self.ID == otherPiece.ID {
@@ -291,5 +289,9 @@ class Piece: SKSpriteNode {
             break
         } while (true)
         return nextPiece
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
